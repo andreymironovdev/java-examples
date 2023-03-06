@@ -1,4 +1,4 @@
-package com.andreymironov.classsloaders;
+package com.andreymironov.memorytypes;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;

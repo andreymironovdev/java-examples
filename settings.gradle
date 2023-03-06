@@ -1,3 +1,5 @@
 rootProject.name = 'java-examples'
 
 include 'classloaders'
+include 'obfuscation'
+include 'memory-types'

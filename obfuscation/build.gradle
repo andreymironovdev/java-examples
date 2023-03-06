@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.guardsquare:proguard-gradle:7.3.0'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.andreymironov'
+
+application {
+    mainClass = 'com.andreymironov.obfuscation.Main'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+task buildWithObfuscation(type: proguard.gradle.ProGuardTask) {
+    configuration file('proguard.pro')
+
+    injars(tasks.named('jar', Jar).flatMap { it.archiveFile })
+
+    // Automatically handle the Java version of this build.
+    if (System.getProperty('java.version').startsWith('1.')) {
+        // Before Java 9, the runtime classes were packaged in a single jar file.
+        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    } else {
+        // As of Java 9, the runtime classes are packaged in modular jmod files.
+        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        //libraryjars "${System.getProperty('java.home')}/jmods/....."
+    }
+
+    verbose
+
+    outjars(layout.buildDirectory.file("libs/${project.name}-${project.version}-proguard.jar"))
+}
