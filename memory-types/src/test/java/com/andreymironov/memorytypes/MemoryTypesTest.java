@@ -20,7 +20,7 @@ public class MemoryTypesTest {
     }
 
     @Test
-    public void testStackOverflowException() {
+    public void should_cause_stackoverflow_exception() {
         System.out.println("The number before Stack overflowing: " + times);
         softAssertions.assertThatThrownBy(this::recursiveInvoke).isInstanceOf(StackOverflowError.class);
         System.out.println("The number after Stack overflowing: " + times);
@@ -29,6 +29,13 @@ public class MemoryTypesTest {
     private void recursiveInvoke() {
         this.times++;
         recursiveInvoke();
+    }
+
+    @Test
+    public void should_cause_oom() {
+        softAssertions.assertThatCode(() -> {
+            long[] array = new long[1_000_000_000];
+        }).isInstanceOf(OutOfMemoryError.class);
     }
 
 }

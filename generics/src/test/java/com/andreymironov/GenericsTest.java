@@ -26,7 +26,8 @@ public class GenericsTest {
         List<Integer> integerList = new ArrayList<>(List.of(1));
 
         SoftAssertions.assertSoftly(softly ->{
-            softly.assertThat(stringList.getClass()).isEqualTo(integerList.getClass());
+            softly.assertThat(stringList.getClass()).isEqualTo(ArrayList.class);
+            softly.assertThat(integerList.getClass()).isEqualTo(ArrayList.class);
         });
     }
 }
