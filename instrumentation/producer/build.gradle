@@ -1,0 +1,43 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group 'com.andreymironov.instrumentation'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly('org.projectlombok:lombok:1.18.26')
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    implementation group: 'org.javassist', name: 'javassist', version: '3.29.2-GA'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Agent-Class': 'com.andreymironov.instrumentation.Premain',
+                'Can-Redefine-Classes': true,
+                'Can-Retransform-Classes': true,
+                'Premain-Class': 'com.andreymironov.instrumentation.Premain',
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

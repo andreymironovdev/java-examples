@@ -1,6 +1,10 @@
 rootProject.name = 'java-examples'
 
+include 'algorithms'
 include 'classloaders'
 include 'obfuscation'
 include 'memory-types'
 include 'generics'
+include 'collections'
+include 'instrumentation:producer'
+include 'instrumentation:consumer'

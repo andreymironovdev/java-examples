@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.andreymironov.instrumentation'
+version = '1.0.0-SNAPSHOT'
+
+application {
+    mainClass = 'com.andreymironov.instrumentation.consumer.Main'
+    applicationDefaultJvmArgs = [
+            "-javaagent:/Users/unknownuser/.m2/repository/com/andreymironov/instrumentation/producer/1.0.0-SNAPSHOT/producer-1.0.0-SNAPSHOT.jar",
+    ]
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly('org.projectlombok:lombok:1.18.26')
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    testImplementation "org.assertj:assertj-core:3.24.2"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
