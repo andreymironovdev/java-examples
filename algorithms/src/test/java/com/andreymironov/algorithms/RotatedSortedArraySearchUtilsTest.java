@@ -7,10 +7,10 @@ class RotatedSortedArraySearchUtilsTest {
     @Test
     void should_search_pivot_index() {
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndex(new int[]{1, 2, 0})).isEqualTo(1);
-            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndex(new int[]{2, 0, 1})).isEqualTo(0);
-            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndex(new int[]{0, 1, 2})).isEqualTo(-1);
-            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndex(new int[]{6, 7, 8, 1, 2, 3, 4, 5}))
+            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndexWithoutDuplicates(new int[]{1, 2, 0})).isEqualTo(1);
+            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndexWithoutDuplicates(new int[]{2, 0, 1})).isEqualTo(0);
+            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndexWithoutDuplicates(new int[]{0, 1, 2})).isEqualTo(-1);
+            softly.assertThat(RotatedSortedArraySearchUtils.searchPivotIndexWithoutDuplicates(new int[]{6, 7, 8, 1, 2, 3, 4, 5}))
                     .isEqualTo(2);
         });
     }
