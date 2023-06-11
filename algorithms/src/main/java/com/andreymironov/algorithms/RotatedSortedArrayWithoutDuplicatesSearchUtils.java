@@ -10,11 +10,11 @@ public class RotatedSortedArrayWithoutDuplicatesSearchUtils {
         int pivotIndex = searchPivotIndex(nums);
 
         if (pivotIndex == -1) {
-            return SortedArraySearchUtils.binarySearch(nums, target);
+            return BinarySearchUtils.search(nums, target);
         } else {
-            int firstIndex = SortedArraySearchUtils.binarySearch(nums, target, 0, pivotIndex);
+            int firstIndex = BinarySearchUtils.search(nums, target, 0, pivotIndex);
             if (firstIndex == -1) {
-                return SortedArraySearchUtils.binarySearch(nums, target, pivotIndex + 1, nums.length - 1);
+                return BinarySearchUtils.search(nums, target, pivotIndex + 1, nums.length - 1);
             } else {
                 return firstIndex;
             }
