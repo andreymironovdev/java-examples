@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AnagramUtils {
+    /**
+     * @param strs array of strings, each of them consists of lowercase english characters
+     * @return groups of anagram strings from the input array
+     */
     public static List<List<String>> groupAnagrams(String[] strs) {
         Map<Integer, List<String>> map = Arrays.stream(strs)
                 .collect(Collectors.groupingBy(AnagramUtils::hashCodeWithCollisionsOnAnagrams));
