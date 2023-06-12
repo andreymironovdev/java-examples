@@ -22,4 +22,16 @@ class ParenthesisUtilsTest {
             softly.assertThat(ParenthesisUtils.isValid("([)]")).isFalse();
         });
     }
+
+    @Test
+    void should_remove_parenthesis() {
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(ParenthesisUtils.removeInvalidParentheses("()())()"))
+                    .containsExactlyInAnyOrder("(())()", "()()()");
+            softAssertions.assertThat(ParenthesisUtils.removeInvalidParentheses("(a)())()"))
+                    .containsExactlyInAnyOrder("(a())()", "(a)()()");
+            softAssertions.assertThat(ParenthesisUtils.removeInvalidParentheses(")("))
+                    .containsExactlyInAnyOrder("");
+        });
+    }
 }
