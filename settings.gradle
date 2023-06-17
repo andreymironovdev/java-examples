@@ -1,6 +1,7 @@
 rootProject.name = 'java-examples'
 
-include 'algorithms'
+include 'leetcode'
+include 'yandex'
 include 'classloaders'
 include 'obfuscation'
 include 'memory-types'
