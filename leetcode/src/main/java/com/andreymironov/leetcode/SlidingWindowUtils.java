@@ -18,51 +18,88 @@ public class SlidingWindowUtils {
      * Complexity is O(n*k)
      */
     public static double[] medianSlidingWindow(int[] nums, int k) {
-        double[] medians = new double[nums.length - k + 1];
+        int n = nums.length;
+        double[] medians = new double[n - k + 1];
 
-        TreeSet<IntegerWithIndex> windowSet = new TreeSet<>();
+        if (k == 1) {
+            for (int i = 0; i< n; i++) {
+                medians[i] = nums[i];
+            }
 
-        for (int i = 0; i < k - 1; i++) {
-            windowSet.add(new IntegerWithIndex(nums[i], i));
+            return medians;
         }
 
+        ValueWithIndex[] values = new ValueWithIndex[n];
+        TreeSet<ValueWithIndex> minSet = new TreeSet<>();
+        TreeSet<ValueWithIndex> maxSet = new TreeSet<>();
 
-        for (int i = 0; i < nums.length - k + 1; i++) {
-            windowSet.add(new IntegerWithIndex(nums[i + k - 1], i + k - 1));
+        // prefill minSet and maxSet
+        int maxMinSetSize = k % 2 == 0 ? k / 2 : (k + 1) / 2;
+        for (int i = 0; i < k; i++) {
+            ValueWithIndex currentValue = new ValueWithIndex(nums[i], i);
+            values[i] = currentValue;
+
+            if (i < maxMinSetSize) {
+                minSet.add(currentValue);
+            } else {
+                if (currentValue.compareTo(minSet.last()) > 0) {
+                    maxSet.add(currentValue);
+                } else {
+                    maxSet.add(minSet.pollLast());
+                    minSet.add(currentValue);
+                }
+            }
+        }
+
+        for (int i = 0; i < n - k + 1; i++) {
             double middle = k % 2 == 0
-                    ? windowSet.stream().skip((k - 1) / 2).limit(2)
-                    .mapToInt(v -> v.value).average().orElse(0)
-                    : windowSet.stream().skip(k / 2).map(v -> v.value).findFirst().orElse(0);
+                    ? 0.5 * minSet.last().value + 0.5 * maxSet.first().value
+                    : minSet.last().value;
             medians[i] = middle;
-            windowSet.remove(new IntegerWithIndex(nums[i], i));
+
+            if (i < n - k) {
+                //remove left value and insert right value
+                ValueWithIndex leftValue = values[i];
+                ValueWithIndex rightValue = new ValueWithIndex(nums[i + k], i + k);
+                values[i + k] = rightValue;
+
+                if (leftValue.compareTo(minSet.last()) > 0) {
+                    maxSet.remove(leftValue);
+                    if (rightValue.compareTo(minSet.last()) > 0) {
+                        maxSet.add(rightValue);
+                    } else {
+                        maxSet.add(minSet.pollLast());
+                        minSet.add(rightValue);
+                    }
+                } else {
+                    minSet.remove(leftValue);
+                    if (rightValue.compareTo(maxSet.first()) < 0) {
+                        minSet.add(rightValue);
+                    } else {
+                        minSet.add(maxSet.pollFirst());
+                        maxSet.add(rightValue);
+                    }
+                }
+            }
         }
 
         return medians;
     }
 
-    private static class IntegerWithIndex implements Comparable<IntegerWithIndex> {
+    private static class ValueWithIndex implements Comparable<ValueWithIndex> {
         int value;
         int index;
 
-        public IntegerWithIndex(int value, int index) {
+        public ValueWithIndex(int value, int index) {
             this.value = value;
             this.index = index;
         }
 
         @Override
-        public int compareTo(IntegerWithIndex o) {
+        public int compareTo(ValueWithIndex o) {
             return this.value == o.value
-                    ? this.index - o.index
-                    : this.value > o.value ? 1 : -1;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerWithIndex another)) {
-                return false;
-            }
-
-            return this.value == another.value && this.index == another.index;
+                    ? Integer.compare(this.index, o.index)
+                    : Integer.compare(this.value, o.value);
         }
     }
 
