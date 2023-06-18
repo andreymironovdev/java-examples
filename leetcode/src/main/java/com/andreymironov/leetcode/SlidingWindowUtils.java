@@ -1,5 +1,7 @@
 package com.andreymironov.leetcode;
 
+import com.andreymironov.leetcode.domain.slidingwindow.ValueWithIndex;
+
 import java.util.TreeSet;
 
 public class SlidingWindowUtils {
@@ -22,7 +24,7 @@ public class SlidingWindowUtils {
         double[] medians = new double[n - k + 1];
 
         if (k == 1) {
-            for (int i = 0; i< n; i++) {
+            for (int i = 0; i < n; i++) {
                 medians[i] = nums[i];
             }
 
@@ -53,8 +55,8 @@ public class SlidingWindowUtils {
 
         for (int i = 0; i < n - k + 1; i++) {
             double middle = k % 2 == 0
-                    ? 0.5 * minSet.last().value + 0.5 * maxSet.first().value
-                    : minSet.last().value;
+                    ? 0.5 * minSet.last().value() + 0.5 * maxSet.first().value()
+                    : minSet.last().value();
             medians[i] = middle;
 
             if (i < n - k) {
@@ -86,21 +88,38 @@ public class SlidingWindowUtils {
         return medians;
     }
 
-    private static class ValueWithIndex implements Comparable<ValueWithIndex> {
-        int value;
-        int index;
+    /**
+     * You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+     * Return the max sliding window.
+     * Constraints:
+     * 1 <= nums.length <= 10^5
+     * -10^4 <= nums[i] <= 10^4
+     * 1 <= k <= nums.length
+     */
+    public static int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        int[] max = new int[n - k + 1];
+        ValueWithIndex[] values = new ValueWithIndex[n];
+        TreeSet<ValueWithIndex> windowSet = new TreeSet<>();
 
-        public ValueWithIndex(int value, int index) {
-            this.value = value;
-            this.index = index;
+        for (int i = 0; i < k; i++) {
+            ValueWithIndex currentValue = new ValueWithIndex(nums[i], i);
+            values[i] = currentValue;
+            windowSet.add(currentValue);
         }
 
-        @Override
-        public int compareTo(ValueWithIndex o) {
-            return this.value == o.value
-                    ? Integer.compare(this.index, o.index)
-                    : Integer.compare(this.value, o.value);
+        for (int i = 0; i < n - k + 1; i++) {
+            max[i] = windowSet.last().value();
+
+            if (i < n - k) {
+                windowSet.remove(values[i]);
+                ValueWithIndex rightValue = new ValueWithIndex(nums[i + k], i + k);
+                values[i+k] = rightValue;
+                windowSet.add(rightValue);
+            }
         }
+
+        return max;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.andreymironov.leetcode;
 
-import com.andreymironov.leetcode.domain.TreeNode;
+import com.andreymironov.leetcode.domain.binarytree.TreeNode;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class BinaryTreeUtilsTest {
     @Test
     void should_compare() {
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(BinaryTreeUtils.isSameTree(new TreeNode(), new TreeNode())).isTrue();
+            softAssertions.assertThat(BinaryTreeUtils.isSameTree(new TreeNode(0), new TreeNode(0))).isTrue();
             softAssertions.assertThat(BinaryTreeUtils.isSameTree(new TreeNode(1), new TreeNode(2))).isFalse();
         });
     }
@@ -35,7 +35,7 @@ class BinaryTreeUtilsTest {
     @Test
     void should_be_balanced() {
         TreeNode left = new TreeNode(1);
-        TreeNode right = new TreeNode(2, new TreeNode(), null);
+        TreeNode right = new TreeNode(2, new TreeNode(0), null);
         TreeNode node = new TreeNode(0, left, right);
         Assertions.assertThat(BinaryTreeUtils.isBalanced(node)).isTrue();
     }
@@ -43,7 +43,7 @@ class BinaryTreeUtilsTest {
     @Test
     void should_not_be_balanced() {
         TreeNode left = new TreeNode(1);
-        TreeNode right = new TreeNode(2, new TreeNode(3, new TreeNode(), null), null);
+        TreeNode right = new TreeNode(2, new TreeNode(3, new TreeNode(0), null), null);
         TreeNode node = new TreeNode(0, left, right);
         Assertions.assertThat(BinaryTreeUtils.isBalanced(node)).isFalse();
     }

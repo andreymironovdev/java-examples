@@ -1,6 +1,6 @@
 package com.andreymironov.leetcode;
 
-import com.andreymironov.leetcode.domain.TreeNode;
+import com.andreymironov.leetcode.domain.binarytree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
