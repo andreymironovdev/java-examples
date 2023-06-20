@@ -2,6 +2,7 @@ package com.andreymironov.leetcode;
 
 import com.andreymironov.leetcode.domain.slidingwindow.ValueWithIndex;
 
+import java.util.Arrays;
 import java.util.TreeSet;
 
 public class SlidingWindowUtils {
@@ -114,7 +115,7 @@ public class SlidingWindowUtils {
             if (i < n - k) {
                 windowSet.remove(values[i]);
                 ValueWithIndex rightValue = new ValueWithIndex(nums[i + k], i + k);
-                values[i+k] = rightValue;
+                values[i + k] = rightValue;
                 windowSet.add(rightValue);
             }
         }
@@ -132,7 +133,29 @@ public class SlidingWindowUtils {
      * 0 <= k <= s.length
      */
     public static int characterReplacement(String s, int k) {
-        //todo
-        return 0;
+        int result = 0;
+
+        int[] frequencies = new int[26];
+        int maxFrequency = 0;
+
+        int start = 0;
+
+        for (int end = 0; end < s.length(); end++) {
+            System.out.println(String.format("%s, %s, %s, %s", start, end, maxFrequency, Arrays.toString(frequencies)));
+            int endCharIndex = s.charAt(end) - 'A';
+            frequencies[endCharIndex] += 1;
+            maxFrequency = Math.max(maxFrequency, frequencies[endCharIndex]);
+
+            int windowLength = end + 1 - start;
+            if (windowLength - maxFrequency > k) {
+                int startCharIndex = s.charAt(start) - 'A';
+                frequencies[startCharIndex]--;
+                start++;
+            }
+
+            result = end + 1 - start;
+        }
+
+        return result;
     }
 }

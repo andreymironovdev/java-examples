@@ -109,7 +109,7 @@ public class RefactorUtils {
     public static String getMethodNamesToRefactor(List<MethodInfo> methodInfoList) {
         List<MethodInfo> sorted = methodInfoList.stream()
                 .sorted()
-                .toList();
+                .collect(Collectors.toList());
 
         return sorted.stream()
                 .map(i -> i.name)

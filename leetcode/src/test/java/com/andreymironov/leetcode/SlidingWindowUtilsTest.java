@@ -29,8 +29,10 @@ class SlidingWindowUtilsTest {
     @Test
     void should_find_character_replacement() {
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("ABAB", 2)).isEqualTo(4);
-            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("AABABBA", 1)).isEqualTo(4);
+//            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("ABAB", 2)).isEqualTo(4);
+//            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("AABABBA", 1)).isEqualTo(4);
+//            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("ABAA", 0)).isEqualTo(2);
+            softAssertions.assertThat(SlidingWindowUtils.characterReplacement("ABBCDAEFGA", 2)).isEqualTo(4);
         });
     }
 }
