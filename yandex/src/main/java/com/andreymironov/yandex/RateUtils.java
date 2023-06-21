@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Yandex task
  * input has the following rows:
  * the first row contains two numbers divided by space (n k),
  * where n is the rate (maximum number of requests per 1 second allowed for user),

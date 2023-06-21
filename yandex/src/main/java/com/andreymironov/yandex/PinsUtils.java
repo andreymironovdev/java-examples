@@ -11,16 +11,16 @@ import java.util.Arrays;
  */
 public class PinsUtils {
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(reader.readLine());
-        int[] coordinates = Arrays.stream(reader.readLine().split(" "))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-        reader.close();
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-        writer.write(String.valueOf(getMinLength(coordinates)));
-        writer.close();
+        try (
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out))
+        ) {
+            int n = Integer.parseInt(reader.readLine());
+            int[] coordinates = Arrays.stream(reader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            writer.write(String.valueOf(getMinLength(coordinates)));
+        }
     }
 
     public static int getMinLength(int[] coordinates) {
