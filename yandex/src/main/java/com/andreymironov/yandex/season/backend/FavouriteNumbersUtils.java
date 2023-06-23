@@ -1,7 +1,11 @@
 package com.andreymironov.yandex.season.backend;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * У Саши есть три любимых числа: 5,6,10.
@@ -16,15 +20,18 @@ public class FavouriteNumbersUtils {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out))
         ) {
-            int n = Integer.parseInt(reader.readLine());
-            int k = Integer.parseInt(reader.readLine());
-            writer.write(String.valueOf(getProbability(n, k)));
+            BigInteger number = new BigInteger(reader.readLine());
+            int operations = Integer.parseInt(reader.readLine());
+            writer.write(String.valueOf(getProbability(number, operations)));
         }
     }
 
-    public static double getProbability(int number, int operations) {
+    public static BigDecimal getProbability(BigInteger number, int operations) {
         if (operations == 0) {
-            return number % 6 == 0 || number % 5 == 0 ? 1.0 : 0.0;
+            return number.remainder(BigInteger.valueOf(6)).equals(BigInteger.ZERO) || number.remainder(
+                    BigInteger.valueOf(5)).equals(BigInteger.ZERO)
+                    ? BigDecimal.ONE
+                    : BigDecimal.ZERO;
         }
 
         // number after operations can divide 5, 6 only
@@ -34,97 +41,59 @@ public class FavouriteNumbersUtils {
         int[] ciphers = String.valueOf(number).chars().map(i -> i - '0').toArray();
         int numLength = ciphers.length;
 
-        long countOf5 = Arrays.stream(ciphers).filter(i -> i == 5).count();
+        int[] indexesOf5 = IntStream.range(0, ciphers.length).filter(i -> ciphers[i] == 5).toArray();
         boolean divide3 = Arrays.stream(ciphers).sum() % 3 == 0;
-        long countOf2 = Arrays.stream(ciphers).filter(i -> i % 2 == 0).count();
-        boolean canDivide5 = countOf5 > 0;
-        boolean canDivide2 = countOf2 > 0;
+        int[] indexesOfEven = IntStream.range(0, ciphers.length).filter(i -> ciphers[i] % 2 == 0).toArray();
+        boolean canDivide5 = indexesOf5.length > 0;
+        boolean canDivide2 = indexesOfEven.length > 0;
         boolean canDivide6 = canDivide2 && divide3;
 
         if (!canDivide5 && !canDivide6) {
-            return 0.0;
+            return BigDecimal.ZERO;
         }
 
-        int[][] transpositions = new int[numLength * (numLength - 1) / 2][2];
-        int start = 0, end = 1;
-        for (int i = 0; i < transpositions.length; i++) {
-            transpositions[i] = new int[]{start, end};
-            if (end < numLength - 1) {
-                end++;
-            } else {
-                start++;
-                end = start + 1;
-            }
-        }
+        BigInteger successWaysCount = BigInteger.ZERO;
+        BigInteger allWaysCount = BigInteger.valueOf((long) numLength * (numLength - 1) / 2).pow(operations);
 
-        long successCasesCount = 0;
-        long allCasesCount = (long) Math.pow(transpositions.length, operations);
-
-        if (canDivide5 && !canDivide6) {
-            //find probability that the number after operations ends with 5
-            int[] transpositionIndexes = new int[operations];
-            while (transpositionIndexes != null) {
-                if (getNumberAfterTranspositions(ciphers, transpositionIndexes, transpositions) % 5 == 0) {
-                    successCasesCount++;
+        // waysCount[op][i][j] = number of ways to move the cipher from the i-th position to the j-th position in op operations
+        BigInteger[][][] waysCount = new BigInteger[operations + 1][numLength][numLength];
+        for (int op = 0; op < operations + 1; op++) {
+            for (int i = 0; i < numLength; i++) {
+                for (int j = 0; j < numLength; j++) {
+                    if (op == 0) {
+                        waysCount[op][i][j] = i == j ? BigInteger.ONE : BigInteger.ZERO;
+                    } else {
+                        int finalJ = j;
+                        int finalOp = op;
+                        int finalI = i;
+                        waysCount[op][i][j] = IntStream.range(0, numLength)
+                                .filter(ind -> ind != finalJ)
+                                .mapToObj(ind -> waysCount[finalOp - 1][finalI][ind])
+                                .reduce(BigInteger.ZERO, BigInteger::add);
+                        waysCount[op][i][j] = waysCount[op][i][j].add(
+                                waysCount[op - 1][i][j].multiply(BigInteger.valueOf(
+                                        (long) (numLength - 1) * (numLength - 2) / 2)));
+                    }
                 }
-                transpositionIndexes = increment(transpositionIndexes, transpositions.length - 1);
-            }
-        } else if (!canDivide5) {
-            //find probability that the number after operations ends with even cipher
-            int[] transpositionIndexes = new int[operations];
-            while (transpositionIndexes != null) {
-                if (getNumberAfterTranspositions(ciphers, transpositionIndexes, transpositions) % 2 == 0) {
-                    successCasesCount++;
-                }
-                transpositionIndexes = increment(transpositionIndexes, transpositions.length- 1);
-            }
-        } else {
-            //find probability that the number after operations ends with even cipher or 5
-            int[] transpositionIndexes = new int[operations];
-            while (transpositionIndexes != null) {
-                int numberAfterTranspositions = getNumberAfterTranspositions(ciphers, transpositionIndexes,
-                        transpositions);
-                if (numberAfterTranspositions % 2 == 0 || numberAfterTranspositions % 5 == 0) {
-                    successCasesCount++;
-                }
-                transpositionIndexes = increment(transpositionIndexes, transpositions.length - 1);
             }
         }
 
-        return (double) successCasesCount / allCasesCount;
-    }
-
-    private static int[] increment(int[] transpositionIndexes, int maxValue) {
-        int index = transpositionIndexes.length - 1;
-        while (index >= 0) {
-            if (transpositionIndexes[index] == maxValue) {
-                transpositionIndexes[index] = 0;
-                index--;
-            } else {
-                transpositionIndexes[index] = transpositionIndexes[index] + 1;
-                break;
+        if (canDivide5) {
+            // find all ways for which the number after operations ends with 5
+            for (int i = 0; i < indexesOf5.length; i++) {
+                int indexOf5 = indexesOf5[i];
+                successWaysCount = successWaysCount.add(waysCount[operations][indexOf5][numLength - 1]);
             }
         }
 
-        if (index < 0) {
-            return null;
-        } else {
-            return transpositionIndexes;
+        if (canDivide6) {
+            // find all ways for which the number after operations ends with even cipher
+            for (int i = 0; i < indexesOfEven.length; i++) {
+                int indexOfEven = indexesOfEven[i];
+                successWaysCount = successWaysCount.add(waysCount[operations][indexOfEven][numLength - 1]);
+            }
         }
-    }
 
-    private static int getNumberAfterTranspositions(int[] ciphers, int[] transpositionIndexes, int[][] transpositions) {
-        int[] ciphersCopy = Arrays.copyOf(ciphers, ciphers.length);
-        for (int index : transpositionIndexes) {
-            int[] transposition = transpositions[index];
-            int k = ciphersCopy[transposition[0]];
-            ciphersCopy[transposition[0]] = ciphersCopy[transposition[1]];
-            ciphersCopy[transposition[1]] = k;
-        }
-        int result = 0;
-        for (int i = 0; i < ciphersCopy.length; i++) {
-            result += Math.pow(10, ciphersCopy.length - i - 1) * ciphersCopy[i];
-        }
-        return result;
+        return new BigDecimal(successWaysCount).divide(new BigDecimal(allWaysCount), 11, RoundingMode.FLOOR);
     }
 }
