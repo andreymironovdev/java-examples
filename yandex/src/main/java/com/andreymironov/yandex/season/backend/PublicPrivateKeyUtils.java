@@ -1,7 +1,8 @@
 package com.andreymironov.yandex.season.backend;
 
 import java.io.*;
-import java.util.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Дима и Егор разрабатывают новый сервис YD (Yandex Dorogi) и в данный момент занимаются аудитом его безопасности.
@@ -31,62 +32,53 @@ public class PublicPrivateKeyUtils {
                     .mapToLong(Long::valueOf)
                     .toArray();
 
-            writer.write(String.valueOf(getPrivateKeysCount(numbers[0], numbers[1])));
+            writer.write(String.valueOf(
+                    getPrivateKeysCount(BigInteger.valueOf(numbers[0]), BigInteger.valueOf(numbers[1]))));
         }
     }
 
-    public static long getPrivateKeysCount(long nod, long nok) {
-        if (nok % nod != 0) {
-            return 0;
+
+    /**
+     * @param nod
+     * @param nok
+     * @return 2 ^ number of prime divisors of nok / nod
+     */
+    public static BigInteger getPrivateKeysCount(BigInteger nod, BigInteger nok) {
+        if (!nok.remainder(nod).equals(BigInteger.ZERO) || nod.compareTo(nok) > 0) {
+            return BigInteger.ZERO;
+        } else if (nod.equals(nok)) {
+            return BigInteger.ONE;
+        } else if (nod.equals(BigInteger.ONE)) {
+            BigInteger divisor = getSmallestPrimeDivisor(nok);
+            int power = getPowerOfDivisor(divisor, nok);
+            return BigInteger.TWO.multiply(getPrivateKeysCount(nod, nok.divide(divisor.pow(power))));
         } else {
-            long result = 1L;
-
-            Map<Long, Integer> nokPrimeDivisors = getPrimeDivisors(nok);
-
-            for (Long nokDivisor: nokPrimeDivisors.keySet()) {
-                if (nod % nokDivisor == 0) {
-                    Integer maxPower = nokPrimeDivisors.get(nokDivisor);
-                    int power = 1;
-                    long divisorToCheck = nokDivisor;
-                    do {
-                        power ++;
-                        divisorToCheck *= nokDivisor;
-                    } while (nod % divisorToCheck == 0);
-
-                    result *= maxPower - power + 2;
-                } else {
-                    result *= 2;
-                }
-            }
-
-            return result;
+            return getPrivateKeysCount(BigInteger.ONE, nok.divide(nod));
         }
     }
 
-    public static Map<Long, Integer> getPrimeDivisors(long num) {
-        Map<Long, Integer> map = new TreeMap<>();
-        Set<Long> consideredDivisors = new TreeSet<>();
-
-        long divisor = 2;
-        while (divisor <= num) {
-            int power = 0;
-            while (num % divisor == 0) {
-                num = num / divisor;
-                power++;
+    public static BigInteger getSmallestPrimeDivisor(BigInteger number) {
+        for (
+                BigInteger i = BigInteger.TWO;
+                i.compareTo(number.sqrt()) <= 0;
+                i = i.add(BigInteger.ONE)
+        ) {
+            if (number.remainder(i).equals(BigInteger.ZERO)) {
+                return i;
             }
-            if (power > 0) {
-                map.put(divisor, power);
-            }
-
-            consideredDivisors.add(divisor);
-            boolean hasConsidered;
-            do {
-                divisor++;
-                long finalDivisor = divisor;
-                hasConsidered = consideredDivisors.stream().anyMatch(d -> finalDivisor % d == 0);
-            } while (hasConsidered);
         }
 
-        return map;
+        return number;
+    }
+
+    public static int getPowerOfDivisor(BigInteger divisor, BigInteger number) {
+        int result = 0;
+
+        while (number.remainder(divisor).equals(BigInteger.ZERO)) {
+            result++;
+            number = number.divide(divisor);
+        }
+
+        return result;
     }
 }
