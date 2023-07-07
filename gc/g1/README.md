@@ -1,5 +1,11 @@
 # G1 Garbage Collector
 
+## G1 is default in java 11,17 for >1 cpus:
+docker run --cpus=1 --rm -it eclipse-temurin:11 java -verbose:gc --version
+[//]: # (Using Serial)
+docker run --cpus=2 --rm -it eclipse-temurin:11 java -verbose:gc --version
+[//]: # (Using G1)
+
 The G1 (garbage-first) garbage collector came with Java 7 (minor version 4) and is an upgrade of the CMS GC. It combines
 different algorithms in a clever way. The G1 collector is parallel, concurrent, and aims for short pauses of the
 application. It employs a technique called incrementally compacting.
