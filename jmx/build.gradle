@@ -6,7 +6,14 @@ plugins {
 group 'com.andreymironov'
 
 application {
-    mainClass = 'com.andreymironov.gc.serial.JmxMain'
+    mainClass = 'com.andreymironov.jmx.JmxMain'
+    applicationDefaultJvmArgs = [
+            '-Dcom.sun.management.jmxremote=true',
+            '-Dcom.sun.management.jmxremote.port=1199',
+            '-Dcom.sun.management.jmxremote.local.only=false',
+            '-Dcom.sun.management.jmxremote.authenticate=false',
+            '-Dcom.sun.management.jmxremote.ssl=false'
+    ]
 }
 
 repositories {
