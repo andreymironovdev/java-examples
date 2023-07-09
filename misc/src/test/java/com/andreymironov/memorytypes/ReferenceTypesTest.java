@@ -20,7 +20,7 @@ public class ReferenceTypesTest {
     }
 
     @Test
-    void should_not_collect_soft_reference() {
+    void should_collect_soft_reference_only_on_slow_memory() {
         Object strongRef = new Object();
         SoftReference<Object> softRef = new SoftReference<>(strongRef);
         strongRef = null;
