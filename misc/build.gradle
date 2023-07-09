@@ -16,4 +16,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs = ['-Xms16m', '-Xmx16m']
 }
