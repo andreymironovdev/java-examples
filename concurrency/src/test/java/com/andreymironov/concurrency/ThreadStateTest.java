@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.*;
 
@@ -78,23 +80,19 @@ public class ThreadStateTest {
 
     @Test
     void should_be_waiting() {
-        Thread threadToWaitFor = new Thread(() -> {
-            while (true) {
-                // Do some work
-            }
-        });
+        CountDownLatch latch = new CountDownLatch(1);
+
         Thread threadToBeWaiting = new Thread(() -> {
             try {
-                threadToWaitFor.join();
+                latch.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
 
-        threadToWaitFor.start();
         threadToBeWaiting.start();
 
-        Assertions.assertThat(threadToBeWaiting.getState()).isEqualTo(Thread.State.WAITING);
+        await().atMost(1, TimeUnit.SECONDS).until(()->threadToBeWaiting.getState() == Thread.State.WAITING);
     }
 
     @Test

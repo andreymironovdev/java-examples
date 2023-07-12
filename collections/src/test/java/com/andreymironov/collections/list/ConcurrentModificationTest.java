@@ -1,4 +1,4 @@
-package com.andreymironov.concurrency.list;
+package com.andreymironov.collections.list;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
-public class ListTest {
+public class ConcurrentModificationTest {
     @Test
     void should_fail_on_simple_list_concurrent_modification() {
         List<Integer> simpleList = new java.util.ArrayList<>(IntStream.range(0, 100)
@@ -23,7 +23,7 @@ public class ListTest {
 
         Assertions.assertThatCode(() -> {
             for (int i : simpleList) {
-                System.out.println(i);
+                // Do something
             }
         }).isInstanceOf(ConcurrentModificationException.class);
     }
@@ -42,7 +42,7 @@ public class ListTest {
 
         Assertions.assertThatCode(() -> {
             for (int i : threadSafeList) {
-                System.out.println(i);
+                // Do something
             }
         }).doesNotThrowAnyException();
     }

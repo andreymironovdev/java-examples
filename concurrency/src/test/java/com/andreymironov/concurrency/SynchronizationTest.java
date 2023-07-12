@@ -1,5 +1,6 @@
-package com.andreymironov.concurrency.synchronization;
+package com.andreymironov.concurrency;
 
+import com.andreymironov.concurrency.synchronization.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
-public class IntStateTest {
+public class SynchronizationTest {
 
     public static final int UPDATES_COUNT = 1000;
 
@@ -60,5 +61,6 @@ public class IntStateTest {
                 }));
 
         countDownLatch.await();
+        executorService.shutdown();
     }
 }

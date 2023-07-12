@@ -1,4 +1,4 @@
-package com.andreymironov.memorytypes;
+package com.andreymironov.collections.map;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
