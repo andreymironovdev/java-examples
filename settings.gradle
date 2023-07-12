@@ -1,5 +1,6 @@
 rootProject.name = 'java-examples'
 
+include 'benchmarking'
 include 'classloaders'
 include 'collections'
 include 'concurrency'

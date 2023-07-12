@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static org.awaitility.Awaitility.*;
 
@@ -99,6 +101,33 @@ public class DeadlockTest {
         latch.countDown();
         executorService.shutdown();
 
+        Assertions.assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isFalse();
+    }
+
+    @Test
+    void should_be_dynamic_deadlock() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        BiFunction<Object, Object, Runnable> runnableBiFunction = (lock1, lock2) -> () -> {
+            try {
+                synchronized (lock1) {
+                    latch.await();
+                    synchronized (lock2) {
+                        System.out.println("Do some work");
+                    }
+                }
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Object lock1 = new Object();
+        Object lock2 = new Object();
+
+        executorService.submit(runnableBiFunction.apply(lock1, lock2));
+        executorService.submit(runnableBiFunction.apply(lock2, lock1));
+        latch.countDown();
+        executorService.shutdown();
         Assertions.assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isFalse();
     }
 }
