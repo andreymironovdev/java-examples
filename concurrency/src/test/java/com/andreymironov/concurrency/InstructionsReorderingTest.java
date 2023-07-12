@@ -1,4 +1,4 @@
-package com.andreymironov.concurrency.reordering;
+package com.andreymironov.concurrency;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ReorderingTest {
+public class InstructionsReorderingTest {
     static class State {
         int number;
         boolean flag;
