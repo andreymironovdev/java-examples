@@ -120,14 +120,25 @@ public class DeadlockTest {
             }
         };
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
         Object lock1 = new Object();
         Object lock2 = new Object();
 
-        executorService.submit(runnableBiFunction.apply(lock1, lock2));
-        executorService.submit(runnableBiFunction.apply(lock2, lock1));
+        SoftAssertions softAssertions = new SoftAssertions();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Future<?> future1 = executorService.submit(runnableBiFunction.apply(lock1, lock2));
+        Future<?> future2 = executorService.submit(runnableBiFunction.apply(lock2, lock1));
+
+        softAssertions.assertThat(future1.isDone()).isFalse();
+        softAssertions.assertThat(future2.isDone()).isFalse();
+
         latch.countDown();
         executorService.shutdown();
-        Assertions.assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isFalse();
+
+        softAssertions.assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isFalse();
+        softAssertions.assertThat(future1.isDone()).isFalse();
+        softAssertions.assertThat(future2.isDone()).isFalse();
+
+        softAssertions.assertAll();
     }
 }

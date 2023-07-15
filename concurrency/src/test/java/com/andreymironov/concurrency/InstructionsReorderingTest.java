@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InstructionsReorderingTest {
@@ -22,17 +22,21 @@ public class InstructionsReorderingTest {
 
         for (int i = 0; i < 1000000; i++) {
             State state = new State();
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
+            ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
             CountDownLatch countDownLatch = new CountDownLatch(2);
+            CountDownLatch startingLatch = new CountDownLatch(1);
             AtomicInteger numberAfterUpdate = new AtomicInteger();
 
             executorService.submit(() -> {
                 while (!state.flag) {
+                    startingLatch.countDown();
                     Thread.yield();
                 }
                 numberAfterUpdate.set(state.number);
                 countDownLatch.countDown();
             });
+
+            startingLatch.await();
 
             executorService.submit(() -> {
                 state.number = newNumber;
@@ -44,6 +48,8 @@ public class InstructionsReorderingTest {
             countDownLatch.await();
 
             if (numberAfterUpdate.get() != newNumber) {
+                System.out.println(
+                        "On iteration " + i + " expected = " + newNumber + ", actual = " + numberAfterUpdate.get());
                 reordered = true;
                 break;
             }

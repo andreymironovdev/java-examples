@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
     testImplementation "org.assertj:assertj-core:3.24.2"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -16,6 +17,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs = ['-Xms16m', '-Xmx16m']
 }
-
-// TODO: move to another repo
