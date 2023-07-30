@@ -9,7 +9,7 @@ version = '1.0.0-SNAPSHOT'
 application {
     mainClass = 'com.andreymironov.instrumentation.consumer.Main'
     applicationDefaultJvmArgs = [
-            "-javaagent:../producer/build/libs/producer-1.0.0-SNAPSHOT.jar",
+            "-Djdk.attach.allowAttachSelf=true"
     ]
 }
 

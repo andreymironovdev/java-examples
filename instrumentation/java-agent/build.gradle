@@ -13,13 +13,13 @@ repositories {
 dependencies {
     compileOnly('org.projectlombok:lombok:1.18.26')
     annotationProcessor('org.projectlombok:lombok:1.18.26')
-    implementation group: 'org.javassist', name: 'javassist', version: '3.29.2-GA'
+    implementation group: 'org.javassist', name: 'javassist', version: '3.28.0-GA'
 }
 
 jar {
     manifest {
         attributes(
-                'Agent-Class': 'com.andreymironov.instrumentation.Premain',
+                'Agent-Class': 'com.andreymironov.instrumentation.Agentmain',
                 'Can-Redefine-Classes': true,
                 'Can-Retransform-Classes': true,
                 'Premain-Class': 'com.andreymironov.instrumentation.Premain',
