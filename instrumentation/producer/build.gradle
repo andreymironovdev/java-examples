@@ -41,5 +41,3 @@ publishing {
 test {
     useJUnitPlatform()
 }
-
-// TODO: improve
