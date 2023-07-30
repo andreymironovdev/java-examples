@@ -9,7 +9,7 @@ version = '1.0.0-SNAPSHOT'
 application {
     mainClass = 'com.andreymironov.instrumentation.consumer.Main'
     applicationDefaultJvmArgs = [
-            "-javaagent:/Users/unknownuser/.m2/repository/com/andreymironov/instrumentation/producer/1.0.0-SNAPSHOT/producer-1.0.0-SNAPSHOT.jar",
+            "-javaagent:../producer/build/libs/producer-1.0.0-SNAPSHOT.jar",
     ]
 }
 
@@ -28,5 +28,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-// TODO: improve

@@ -1,10 +1,17 @@
 package com.andreymironov.instrumentation.consumer;
 
-import java.util.Optional;
-
 public class Main {
+    public static void methodToInsertBeforeBody() {
+        System.out.println("Executing methodToInsertBeforeBody method...");
+    }
+
+    public static void methodToReplaceBody() {
+        System.out.println("Executing methodToReplaceBody method...");
+    }
+
     public static void main(String[] args) {
-        Optional.of("abc");
-        System.out.println("Hello!!!");
+        System.out.println("Executing main method...");
+        methodToInsertBeforeBody();
+        methodToReplaceBody();
     }
 }

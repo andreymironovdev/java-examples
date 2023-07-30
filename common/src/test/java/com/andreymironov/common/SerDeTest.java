@@ -8,7 +8,7 @@ import java.io.*;
 
 public class SerDeTest {
     @Test
-    void should_not_serialize() throws IOException {
+    void should_not_serialize() {
         Assertions.assertThatCode(() -> new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(new Object()))
                 .isInstanceOf(NotSerializableException.class);
     }
