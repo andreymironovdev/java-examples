@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'com.andreymironov.annotationprocessing'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "com.andreymironov.annotationprocessing:processor:1.0.0-SNAPSHOT"
+    annotationProcessor "com.andreymironov.annotationprocessing:processor:1.0.0-SNAPSHOT"
+    testImplementation "org.assertj:assertj-core:3.24.2"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
