@@ -15,4 +15,8 @@ public class ResourceFactory {
     public static Object getResource() {
         return ResourceHolder.RESOURCE;
     }
+
+    public static void triggerClassLoad() {
+        System.out.println("Executed method testFactoryLoad");
+    }
 }

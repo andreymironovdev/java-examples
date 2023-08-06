@@ -13,9 +13,18 @@ public class LazyInitializationTest {
             throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         SoftAssertions softAssertions = new SoftAssertions();
 
-        String resourceHolderClassName = "com.andreymironov.classloaders.lazyinitialization.ResourceFactory$ResourceHolder";
+        String resourceFactoryClassName = "com.andreymironov.classloaders.lazyinitialization.ResourceFactory";
+        String resourceHolderClassName = resourceFactoryClassName + "$ResourceHolder";
+
+        softAssertions.assertThat(getLoadedClass(resourceFactoryClassName)).isNull();
         softAssertions.assertThat(getLoadedClass(resourceHolderClassName)).isNull();
+
+        ResourceFactory.triggerClassLoad();
+        softAssertions.assertThat(getLoadedClass(resourceFactoryClassName)).isNotNull();
+        softAssertions.assertThat(getLoadedClass(resourceHolderClassName)).isNull();
+
         softAssertions.assertThat(ResourceFactory.getResource()).isNotNull();
+
         softAssertions.assertThat(getLoadedClass(resourceHolderClassName)).isNotNull();
 
         softAssertions.assertAll();
