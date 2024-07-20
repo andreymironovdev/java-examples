@@ -6,7 +6,7 @@ plugins {
 group 'com.andreymironov'
 
 application {
-    mainClass = 'com.andreymironov.bytecode.Main'
+    mainClass = 'com.andreymironov.bytecode.BytecodeMain'
 }
 
 repositories {
@@ -22,5 +22,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-// TODO: solve the problem
